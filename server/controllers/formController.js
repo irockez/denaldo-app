@@ -1,23 +1,26 @@
-const db = require("../db/database");
+const { insertFormData, getAllFormData } = require("../db");
 
-exports.submitForm = (req, res) => {
+exports.submitForm = async (req, res) => {
+    console.log("Получены данные для формы:", req.body);
+
     const { form_type, content } = req.body;
     const created_at = new Date().toISOString();
 
-    const stmt = db.prepare("INSERT INTO form_data (form_type, content, created_at) VALUES (?, ?, ?)");
-    stmt.run(form_type, content, created_at, function (err) {
-        if (err) {
-            return res.status(500).json({ error: err.message });
-        }
-        res.status(201).json({ id: this.lastID });
-    });
+    try {
+        const result = await insertFormData(form_type, content, created_at);
+        res.status(201).json({ id: result.rows[0].id });
+    } catch (err) {
+        console.error("Ошибка при вставке данных формы:", err);
+        res.status(500).json({ error: err.message });
+    }
 };
 
-exports.getAllData = (req, res) => {
-    db.all("SELECT * FROM form_data", (err, rows) => {
-        if (err) {
-            return res.status(500).json({ error: err.message });
-        }
+exports.getAllData = async (req, res) => {
+    try {
+        const rows = await getAllFormData();
         res.json(rows);
-    });
+    } catch (err) {
+        console.error("Ошибка при получении данных формы:", err);
+        res.status(500).json({ error: err.message });
+    }
 };

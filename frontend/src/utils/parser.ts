@@ -5,6 +5,23 @@ export interface ParsedField {
     value: string;
 }
 
+// Функция для преобразования даты в нужный формат
+function formatDate(date: string): string {
+    if (!date) return '';
+
+    const [dayMonthYear, time] = date.split(' '); // <-- через пробел теперь
+    if (!dayMonthYear || !time) return date; // если не можем распарсить, возвращаем как есть
+
+    const [day, month, year] = dayMonthYear.split('.');
+    const [hours, minutes, seconds] = time.split(':');
+
+    if (!day || !month || !year || !hours || !minutes || !seconds) {
+        return date; // если что-то не так, возвращаем как есть
+    }
+
+    return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+}
+
 export function parseRawData(text: string): ParsedField[] {
     const lines = text.split('\n');
     const fields: ParsedField[] = [];
@@ -36,6 +53,13 @@ export function parseRawData(text: string): ParsedField[] {
             fields.push({ key: current, value: '' });
         }
     }
+
+    // Преобразуем даты, если они есть
+    fields.forEach((field) => {
+        if (field.key === 'Начало расчета' || field.key === 'Конец расчета') {
+            field.value = formatDate(field.value);
+        }
+    });
 
     return fields;
 }
