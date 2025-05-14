@@ -1,26 +1,31 @@
-const { insertFormData, getAllFormData } = require("../db");
+// controllers/formController.js
+const pool = require('../db/index');
+console.log(pool);
 
-exports.submitForm = async (req, res) => {
-    console.log("Получены данные для формы:", req.body);
-
-    const { form_type, content } = req.body;
-    const created_at = new Date().toISOString();
-
+// Контроллер для обработки отправки формы
+const submitForm = async (req, res) => {
     try {
-        const result = await insertFormData(form_type, content, created_at);
-        res.status(201).json({ id: result.rows[0].id });
-    } catch (err) {
-        console.error("Ошибка при вставке данных формы:", err);
-        res.status(500).json({ error: err.message });
+        const { id, parsedData } = req.body;
+
+        console.log('Получены данные для формы:', req.body);
+
+        if (!id || !parsedData) {
+            return res.status(400).json({ error: 'Ожидались поля id и parsedData' });
+        }
+
+        const query = `
+            INSERT INTO form_results (id, content)
+            VALUES ($1, $2)
+            ON CONFLICT (id) DO UPDATE SET content = EXCLUDED.content
+        `;
+
+        await pool.query(query, [id, parsedData]);
+
+        res.status(200).json({ message: 'Данные успешно сохранены' });
+    } catch (error) {
+        console.error('Ошибка при сохранении данных формы:', error);
+        res.status(500).json({ error: 'Ошибка сервера при сохранении данных' });
     }
 };
 
-exports.getAllData = async (req, res) => {
-    try {
-        const rows = await getAllFormData();
-        res.json(rows);
-    } catch (err) {
-        console.error("Ошибка при получении данных формы:", err);
-        res.status(500).json({ error: err.message });
-    }
-};
+module.exports = { submitForm };

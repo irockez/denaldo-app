@@ -9,22 +9,48 @@ export const InputPage: React.FC = () => {
     const [additionalForms, setAdditionalForms] = useState<Record<string, string>>({});
 
     const handleSubmit = () => {
-        const additional: { title: string; data: Record<string, string> }[] = Object.entries(additionalForms).map(
-            ([key, value]) => ({
-                title: key,
-                data: parseRawData(value)
-            })
-        );
+        // Получаем поля с 'Показать'
+        const showFields = getShowFields();
 
+        // Формируем финальный объект для отправки
         const fullPayload = {
-            id,
-            rawData,
-            parsedData: parsed.reduce((acc, item) => {
-                acc[item.key] = item.value;
-                return acc;
-            }, {} as Record<string, string>),
-            additional,
+            id, // Добавляем id в parsedData
+            parsedData: {
+                ...parsed.reduce((acc, item) => {
+                    acc[item.key] = item.value;
+                    return acc;
+                }, {} as Record<string, any>),
+                id, // Не забываем добавить id в parsedData
+                ...showFields.reduce((acc, field) => {
+                    const raw = additionalForms[field.key];
+
+                    // Проверяем, если форма пуста
+                    if (!raw || raw.trim() === '') {
+                        acc[field.key] = ''; // Если пусто, передаем пустую строку
+                    } else {
+                        const parsedAdditional = parseRawData(raw);
+
+                        // Если парсер возвращает массив, мы преобразуем его в объект
+                        if (Array.isArray(parsedAdditional)) {
+                            const parsedObject = parsedAdditional.reduce((obj, item) => {
+                                if (item.key && item.value !== undefined) {
+                                    obj[item.key] = item.value;
+                                }
+                                return obj;
+                            }, {} as Record<string, any>);
+                            acc[field.key] = parsedObject;
+                        } else {
+                            acc[field.key] = parsedAdditional;
+                        }
+                    }
+
+                    return acc;
+                }, {} as Record<string, any>),
+            },
         };
+
+        // Отправляем данные
+        console.log("📦 Финальный объект перед отправкой на сервер:", fullPayload);
 
         fetch('http://localhost:3000/api/submit', {
             method: 'POST',
@@ -33,25 +59,27 @@ export const InputPage: React.FC = () => {
         })
             .then((res) => res.json())
             .then((data) => {
-                console.log('Сервер принял данные:', data);
+                console.log('✅ Сервер принял данные:', data);
                 alert('Данные успешно сохранены!');
             })
             .catch((err) => {
-                console.error('Ошибка при отправке:', err);
+                console.error('❌ Ошибка при отправке:', err);
                 alert('Ошибка при сохранении!');
             });
     };
 
+    // Фильтруем поля с "Показать"
     const getShowFields = () =>
         parsed.filter((field) => field.value.toLowerCase() === 'показать');
 
+    // Обрабатываем изменения в доп. формах
     const handleAdditionalChange = (key: string, value: string) => {
         setAdditionalForms((prev) => ({ ...prev, [key]: value }));
     };
 
     return (
         <div style={{ padding: '2rem' }}>
-            <h1>Добавление отчёта</h1>
+            <h1>Добавление результатов бектеста</h1>
 
             <div style={{ marginBottom: '1rem' }}>
                 <label>ID данных:</label>

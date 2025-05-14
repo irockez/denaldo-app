@@ -1,10 +1,8 @@
 const express = require("express");
-const router = express.Router();
-const formController = require("../controllers/formController");
-const { saveReport } = require("../controllers/reportController");
+const router = express.Router(); // Создаем экземпляр роутера Express
+const formController = require("../controllers/formController"); // Импортируем контроллеры для обработки запросов
 
+// Маршрут для обработки POST-запроса на отправку формы
 router.post("/submit", formController.submitForm);
-router.get("/data", formController.getAllData);
-router.post("/save", saveReport); // Этот маршрут будет сохранять данные
 
-module.exports = router;
+module.exports = router; // Экспортируем маршруты для использования в основном приложении
