@@ -28,4 +28,14 @@ const submitForm = async (req, res) => {
     }
 };
 
-module.exports = { submitForm };
+async function getParsedData(req, res) {
+    try {
+        const result = await pool.query('SELECT * FROM form_results ORDER BY id DESC');
+        res.json(result.rows);
+    } catch (err) {
+        console.error('Ошибка при получении данных из базы:', err);
+        res.status(500).json({ error: 'Ошибка при получении данных' });
+    }
+}
+
+module.exports = { submitForm, getParsedData };

@@ -10,15 +10,8 @@ const pool = new Pool({
 
 // Просто вставка данных из parsedData в parsed_data
 async function insertParsedData(id, parsedData) {
-    const keys = Object.keys(parsedData);
-    const values = Object.values(parsedData);
-
-    const columns = keys.join(', ');
-    const placeholders = keys.map((_, i) => `$${i + 1}`).join(', ');
-
-    const query = `INSERT INTO parsed_data (${columns}) VALUES (${placeholders})`;
-
-    await pool.query(query, values);
+    const query = `INSERT INTO parsed_data (parsed_data) VALUES ($1)`;
+    await pool.query(query, [parsedData]);
 }
 
 module.exports = pool;

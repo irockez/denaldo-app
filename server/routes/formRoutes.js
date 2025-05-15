@@ -4,5 +4,6 @@ const formController = require("../controllers/formController"); // Импорт
 
 // Маршрут для обработки POST-запроса на отправку формы
 router.post("/submit", formController.submitForm);
+router.get('/data', formController.getParsedData);
 
 module.exports = router; // Экспортируем маршруты для использования в основном приложении

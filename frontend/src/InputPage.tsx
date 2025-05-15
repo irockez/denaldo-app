@@ -1,12 +1,15 @@
 // frontend/src/InputPage.tsx
 import React, { useState } from 'react';
 import { parseRawData, ParsedField } from './utils/parser';
+import { Link } from 'react-router-dom';
+
 
 export const InputPage: React.FC = () => {
     const [id, setId] = useState('');
     const [rawData, setRawData] = useState('');
     const [parsed, setParsed] = useState<ParsedField[]>([]);
     const [additionalForms, setAdditionalForms] = useState<Record<string, string>>({});
+
 
     const handleSubmit = () => {
         // Получаем поля с 'Показать'
@@ -78,23 +81,24 @@ export const InputPage: React.FC = () => {
     };
 
     return (
-        <div style={{ padding: '2rem' }}>
+        <div style={{padding: '2rem'}}>
             <h1>Добавление результатов бектеста</h1>
 
-            <div style={{ marginBottom: '1rem' }}>
+            <div style={{marginBottom: '1rem'}}>
                 <label>ID данных:</label>
-                <br />
+                <br/>
                 <input
                     type="text"
                     value={id}
                     onChange={(e) => setId(e.target.value)}
-                    style={{ width: '300px' }}
+                    style={{width: '300px'}}
                 />
             </div>
 
-            <div style={{ marginBottom: '1rem' }}>
+
+            <div style={{marginBottom: '1rem'}}>
                 <label>Основные данные (вставьте блок):</label>
-                <br />
+                <br/>
                 <textarea
                     value={rawData}
                     onChange={(e) => {
@@ -122,9 +126,9 @@ export const InputPage: React.FC = () => {
             )}
 
             {getShowFields().map((field, index) => (
-                <div key={index} style={{ marginTop: '1rem' }}>
+                <div key={index} style={{marginTop: '1rem'}}>
                     <label>Дополнительная форма: {field.key}</label>
-                    <br />
+                    <br/>
                     <textarea
                         rows={10}
                         cols={60}
@@ -135,9 +139,15 @@ export const InputPage: React.FC = () => {
                 </div>
             ))}
 
-            <div style={{ marginTop: '2rem' }}>
+            <div style={{marginTop: '2rem'}}>
                 <button onClick={handleSubmit}>Сохранить</button>
             </div>
+
+            <div>
+                {/* Кнопка для перехода на страницу с отображением данных */}
+                <Link to="/display">Посмотреть данные</Link>
+            </div>
+
         </div>
     );
 };
