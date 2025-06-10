@@ -87,7 +87,7 @@ docker start database
 ## 📚 Полезные команды
 ```bash
 # docker + psql
-docker start database
+docker start denaldo-app
 docker exec -it database psql -U postgres
 
 # запуск сервера

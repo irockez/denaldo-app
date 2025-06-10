@@ -1,6 +1,5 @@
 // controllers/formController.js
 const pool = require('../db/index');
-console.log(pool);
 
 // Контроллер для обработки отправки формы
 const submitForm = async (req, res) => {
