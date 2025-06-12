@@ -95,7 +95,7 @@ export const InputPage: React.FC = () => {
             </div>
 
             <div style={{marginBottom: '1rem'}}>
-                <label>Основные данные (вставьте блок):</label>
+                <label>Результаты бектеста (вставьте блок):</label>
                 <br/>
                 <textarea
                     value={rawData}
@@ -105,8 +105,8 @@ export const InputPage: React.FC = () => {
                         const fields = parseRawData(text);
                         setParsed(fields);
                     }}
-                    rows={20}
-                    cols={80}
+                    rows={6}
+                    cols={60}
                 />
             </div>
 
