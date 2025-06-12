@@ -1,4 +1,3 @@
-// frontend/src/InputPage.tsx
 import React, { useState } from 'react';
 import { parseRawData, ParsedField } from './utils/parser';
 import { Link } from 'react-router-dom';
@@ -95,7 +94,6 @@ export const InputPage: React.FC = () => {
                 />
             </div>
 
-
             <div style={{marginBottom: '1rem'}}>
                 <label>Основные данные (вставьте блок):</label>
                 <br/>
@@ -138,6 +136,41 @@ export const InputPage: React.FC = () => {
                     />
                 </div>
             ))}
+
+            {/* Новые формы */}
+            <div style={{marginTop: '1rem'}}>
+                <label>Настройки:</label>
+                <br/>
+                <textarea
+                    rows={6}
+                    cols={60}
+                    placeholder="Введите настройки..."
+                    value={additionalForms['Настройки'] || ''}
+                    onChange={(e) => handleAdditionalChange('Настройки', e.target.value)}
+                />
+            </div>
+            <div style={{marginTop: '1rem'}}>
+                <label>Мани менеджмент:</label>
+                <br/>
+                <textarea
+                    rows={6}
+                    cols={60}
+                    placeholder="Введите правила мани менеджмента..."
+                    value={additionalForms['Мани менеджмент'] || ''}
+                    onChange={(e) => handleAdditionalChange('Мани менеджмент', e.target.value)}
+                />
+            </div>
+            <div style={{marginTop: '1rem'}}>
+                <label>Риск менеджмент:</label>
+                <br/>
+                <textarea
+                    rows={6}
+                    cols={60}
+                    placeholder="Введите правила риск менеджмента..."
+                    value={additionalForms['Риск менеджмент'] || ''}
+                    onChange={(e) => handleAdditionalChange('Риск менеджмент', e.target.value)}
+                />
+            </div>
 
             <div style={{marginTop: '2rem'}}>
                 <button onClick={handleSubmit}>Сохранить</button>
